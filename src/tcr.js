@@ -97,20 +97,21 @@ class TCR {
     const validActions = this.getValidActions(challenger)
 
     const columnSelected = getVerdict(this.getEligibleVoters(), this.voteQuorum) ? columnLose : columnWin
+    const tokenValueChange = this.getTokenAppreciation() * challenger.tokens
 
     let matrix = {}, payoffs = []
 
     if (validActions.includes(actionChallenge)) {
       matrix[actionChallenge] = {}
       matrix[actionChallenge][columnWin] = this.minDeposit * this.dispensationPct
-      matrix[actionChallenge][columnLose] = -1 * this.minDeposit
+      matrix[actionChallenge][columnLose] = tokenValueChange - this.minDeposit
       payoffs.push(new Payoff({ action: actionChallenge, value: matrix[actionChallenge][columnSelected] }))
     }
 
     if (validActions.includes(actionNotChallenge)) {
       matrix[actionNotChallenge] = {}
-      matrix[actionNotChallenge][columnWin] = 0
-      matrix[actionNotChallenge][columnLose] = 0
+      matrix[actionNotChallenge][columnWin] = tokenValueChange
+      matrix[actionNotChallenge][columnLose] = tokenValueChange
       payoffs.push(new Payoff({ action: actionNotChallenge, value: matrix[actionNotChallenge][columnSelected] }))
     }
 
@@ -146,25 +147,27 @@ class TCR {
     const percentOfAcceptBloc = voter.tokens / (acceptBlocTokens + voter.tokens)
     const percentOfRejectBloc = voter.tokens / (rejectBlocTokens + voter.tokens)
 
+    const tokenValueChange = this.getTokenAppreciation() * voter.tokens
+
     let matrix = {}, payoffs = []
 
     if (validActions.includes(actionAccept)) {
       matrix[actionAccept] = {}
-      matrix[actionAccept][columnAccept] = (1 - this.dispensationPct) * this.minDeposit + rejectBlocTokens * this.minorityBlocSlash * percentOfAcceptBloc
+      matrix[actionAccept][columnAccept] = tokenValueChange + (1 - this.dispensationPct) * this.minDeposit + rejectBlocTokens * this.minorityBlocSlash * percentOfAcceptBloc
       matrix[actionAccept][columnReject] = -1 * voter.tokens * this.minorityBlocSlash
       payoffs.push(new Payoff({ action: actionAccept, value: matrix[actionAccept][columnIfIAccept] }))
     }
 
     if (validActions.includes(actionReject)) {
       matrix[actionReject] = {}
-      matrix[actionReject][columnAccept] = -1 * voter.tokens * this.minorityBlocSlash
+      matrix[actionReject][columnAccept] = tokenValueChange - (voter.tokens * this.minorityBlocSlash)
       matrix[actionReject][columnReject] = (1 - this.dispensationPct) * this.minDeposit + acceptBlocTokens * this.minorityBlocSlash * percentOfRejectBloc
       payoffs.push(new Payoff({ action: actionReject, value: matrix[actionReject][columnIfIReject] }))
     }
 
     if (validActions.includes(actionAbstain)) {
       matrix[actionAbstain] = {}
-      matrix[actionAbstain][columnAccept] = 0
+      matrix[actionAbstain][columnAccept] = tokenValueChange
       matrix[actionAbstain][columnReject] = 0
       payoffs.push(new Payoff({ action: actionAbstain, value: matrix[actionAbstain][columnIfIAbstain] }))
     }
@@ -181,6 +184,13 @@ class TCR {
     const hasLocked = (player.id === this.candidate) || (player.id === this.challenger) || this.registry.includes(player.id)
     const available = hasLocked ? all - this.minDeposit : all
     return available >= 0 ? available : 0
+  }
+
+  getTokenAppreciation() {
+    const avgQuality = 1 // just stubbing this in for now
+    const candidate = this.getPlayer(this.candidate)
+    const quality = candidate.quality || 1
+    return (quality / avgQuality) - 1
   }
 
   getEligibleVoters() {
