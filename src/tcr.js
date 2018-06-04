@@ -71,9 +71,9 @@ class TCR {
 
     if (validActions.includes(actionList)) {
       matrix[actionList] = {}
-      matrix[actionList][columnAccept] = this.minDeposit * this.dispensationPct
+      matrix[actionList][columnAccept] = candidate.registryValue + this.minDeposit * this.dispensationPct
       matrix[actionList][columnReject] = -1 * this.minDeposit
-      matrix[actionList][columnNotChallenge] = 0
+      matrix[actionList][columnNotChallenge] = candidate.registryValue
       payoffs.push(new Payoff({ action: actionList, value: matrix[actionList][columnSelected] }))
     }
 
