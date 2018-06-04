@@ -8,6 +8,7 @@ const actionNotChallenge = 'not_challenge'
 
 const actionAccept = 'accept'
 const actionReject = 'reject'
+const actionAbstain = 'abstain'
 
 class Payoff {
   constructor({ action, value } = {}) {
@@ -139,6 +140,7 @@ class TCR {
     // therefore the column selected now depends on my action
     const columnIfIAccept = getVerdict(withMeAccepting, this.voteQuorum) ? columnAccept : columnReject
     const columnIfIReject = getVerdict(withMeRejecting, this.voteQuorum) ? columnAccept : columnReject
+    const columnIfIAbstain = getVerdict(otherVoters, this.voteQuorum) ? columnAccept : columnReject
 
     // percentage including voter
     const percentOfAcceptBloc = voter.tokens / (acceptBlocTokens + voter.tokens)
@@ -158,6 +160,13 @@ class TCR {
       matrix[actionReject][columnAccept] = -1 * voter.tokens * this.minorityBlocSlash
       matrix[actionReject][columnReject] = (1 - this.dispensationPct) * this.minDeposit + acceptBlocTokens * this.minorityBlocSlash * percentOfRejectBloc
       payoffs.push(new Payoff({ action: actionReject, value: matrix[actionReject][columnIfIReject] }))
+    }
+
+    if (validActions.includes(actionAbstain)) {
+      matrix[actionAbstain] = {}
+      matrix[actionAbstain][columnAccept] = 0
+      matrix[actionAbstain][columnReject] = 0
+      payoffs.push(new Payoff({ action: actionAbstain, value: matrix[actionAbstain][columnIfIAbstain] }))
     }
 
     return payoffs
@@ -205,7 +214,7 @@ class TCR {
     } else if (player.id === this.challenger) {
       validActions = canDeposit ? [actionChallenge, actionNotChallenge] : [actionNotChallenge]
     } else {
-      validActions = [actionAccept, actionReject]
+      validActions = [actionAbstain, actionAccept, actionReject]
     }
     return validActions
   }
@@ -276,6 +285,7 @@ module.exports = {
   actionNotChallenge,
   actionAccept,
   actionReject,
+  actionAbstain,
   Player,
   TCR
 }
