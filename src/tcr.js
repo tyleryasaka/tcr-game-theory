@@ -44,7 +44,9 @@ class TCR {
     minDeposit,
     dispensationPct,
     minorityBlocSlash,
-    voteQuorum
+    voteQuorum,
+    challengeEffort,
+    voteEffort
   } = {}) {
     this.players = players
     this.candidate = candidate
@@ -54,6 +56,8 @@ class TCR {
     this.dispensationPct = dispensationPct
     this.minorityBlocSlash = minorityBlocSlash
     this.voteQuorum = voteQuorum
+    this.challengeEffort = challengeEffort
+    this.voteEffort = voteEffort
   }
 
   getCandidatePayoff() {
@@ -103,8 +107,8 @@ class TCR {
 
     if (validActions.includes(actionChallenge)) {
       matrix[actionChallenge] = {}
-      matrix[actionChallenge][columnWin] = this.minDeposit * this.dispensationPct
-      matrix[actionChallenge][columnLose] = tokenValueChange - this.minDeposit
+      matrix[actionChallenge][columnWin] = this.minDeposit * this.dispensationPct - this.challengeEffort
+      matrix[actionChallenge][columnLose] = tokenValueChange - this.minDeposit - this.challengeEffort
       payoffs.push(new Payoff({ action: actionChallenge, value: matrix[actionChallenge][columnSelected] }))
     }
 
@@ -153,15 +157,15 @@ class TCR {
 
     if (validActions.includes(actionAccept)) {
       matrix[actionAccept] = {}
-      matrix[actionAccept][columnAccept] = tokenValueChange + (1 - this.dispensationPct) * this.minDeposit + rejectBlocTokens * this.minorityBlocSlash * percentOfAcceptBloc
-      matrix[actionAccept][columnReject] = -1 * voter.tokens * this.minorityBlocSlash
+      matrix[actionAccept][columnAccept] = tokenValueChange + (1 - this.dispensationPct) * this.minDeposit + rejectBlocTokens * this.minorityBlocSlash * percentOfAcceptBloc - this.voteEffort
+      matrix[actionAccept][columnReject] = -1 * voter.tokens * this.minorityBlocSlash - this.voteEffort
       payoffs.push(new Payoff({ action: actionAccept, value: matrix[actionAccept][columnIfIAccept] }))
     }
 
     if (validActions.includes(actionReject)) {
       matrix[actionReject] = {}
-      matrix[actionReject][columnAccept] = tokenValueChange - (voter.tokens * this.minorityBlocSlash)
-      matrix[actionReject][columnReject] = (1 - this.dispensationPct) * this.minDeposit + acceptBlocTokens * this.minorityBlocSlash * percentOfRejectBloc
+      matrix[actionReject][columnAccept] = tokenValueChange - (voter.tokens * this.minorityBlocSlash) - this.voteEffort
+      matrix[actionReject][columnReject] = (1 - this.dispensationPct) * this.minDeposit + acceptBlocTokens * this.minorityBlocSlash * percentOfRejectBloc - this.voteEffort
       payoffs.push(new Payoff({ action: actionReject, value: matrix[actionReject][columnIfIReject] }))
     }
 
