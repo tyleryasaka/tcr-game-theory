@@ -227,14 +227,23 @@ class TCR {
     return payoffForSelected === maxPayoff
   }
 
-  getPlayersData() {
-    return this.players.map((player) => {
-      return {
-        player,
-        payoffs: this.getPlayerPayoff(player),
-        isBestStrategy: this.isBestStrategy(player)
-      }
-    })
+  isEquilibrium() {
+    return this.players.reduce((acc, player) => {
+      return acc && this.isBestStrategy(player)
+    }, true)
+  }
+
+  getGameData() {
+    return {
+      players: this.players.map((player) => {
+        return {
+          player,
+          payoffs: this.getPlayerPayoff(player),
+          isBestStrategy: this.isBestStrategy(player)
+        }
+      }),
+      isEquilibrium: this.isEquilibrium()
+    }
   }
 }
 
