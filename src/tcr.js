@@ -250,8 +250,7 @@ class TCR {
 function getAcceptBlocTokens(voters) {
   return voters.filter(({ action }) => {
     return action === actionAccept
-  }).map(({ tokens }) => tokens)
-  return tokens.reduce((total, current) => {
+  }).map(({ tokens }) => tokens).reduce((total, current) => {
     return total + current
   }, 0)
 }
