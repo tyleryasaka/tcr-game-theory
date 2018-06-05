@@ -193,10 +193,10 @@ class TCR {
   }
 
   getTokenAppreciation() {
-    const avgQuality = 1 // just stubbing this in for now
+    const currentQuality = 100 // just stubbing this in for now
     const candidate = this.getPlayer(this.candidate)
-    const quality = candidate.quality || 1
-    return (quality / avgQuality) - 1
+    const addedQuality = candidate.quality || 0
+    return (currentQuality + addedQuality) / currentQuality
   }
 
   getEligibleVoters() {
