@@ -52,9 +52,9 @@ class App extends Component {
       voteEffort: 0,
       players: [
         new Player({ tokens: 6, action: actionChallenge }),
-        new Player({ tokens: 5, action: actionNotApply, registryValue: 100, quality: 0.1 }),
+        new Player({ tokens: 5, action: actionNotApply, registryValue: 100, quality: 1 }),
         new Player({ tokens: 10, action: actionReject }),
-        new Player({ tokens: 10, action: actionReject }),
+        new Player({ tokens: 15, action: actionReject }),
         new Player({ tokens: 10, action: actionReject }),
         new Player({ tokens: 10, action: actionReject }),
       ]
@@ -64,9 +64,16 @@ class App extends Component {
     this.state = { tcr };
   }
 
-  setGameProperty(property, value) {
+  setGameProperty(property) {
     return (e) => {
       this.state.tcr[property] = e.target.value;
+      this.forceUpdate();
+    }
+  }
+
+  setPlayerProperty(player, property) {
+    return (e) => {
+      player[property] = e.target.value;
       this.forceUpdate();
     }
   }
@@ -198,6 +205,44 @@ class App extends Component {
               <Grid item sm={12} md={6}>
                 <Paper className={classes.paper}>
                   <h2>Candidate</h2>
+                  <TextField
+                    id="number"
+                    label="Listing Valuation"
+                    value={candidate.player.registryValue}
+                    onChange={this.setPlayerProperty(candidate.player, "registryValue")}
+                    type="number"
+                    inputProps={{ min: "0" }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    margin="normal"
+                    className={classes.textField}
+                  />
+                  <TextField
+                    id="number"
+                    label="Quality"
+                    value={candidate.player.quality}
+                    onChange={this.setPlayerProperty(candidate.player, "quality")}
+                    type="number"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    margin="normal"
+                    className={classes.textField}
+                  />
+                  <TextField
+                    id="number"
+                    label="Tokens"
+                    value={candidate.player.tokens}
+                    onChange={this.setPlayerProperty(candidate.player, "tokens")}
+                    type="number"
+                    inputProps={{ min: "0" }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    margin="normal"
+                    className={classes.textField}
+                  />
                   <Select
                     value={candidate.player.action}
                     onChange={this.setAction(candidate.player)}
@@ -210,6 +255,19 @@ class App extends Component {
               <Grid item sm={12} md={6}>
                 <Paper className={classes.paper}>
                   <h2>Challenger</h2>
+                  <TextField
+                    id="number"
+                    label="Tokens"
+                    value={challenger.player.tokens}
+                    onChange={this.setPlayerProperty(challenger.player, "tokens")}
+                    type="number"
+                    inputProps={{ min: "0" }}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    margin="normal"
+                    className={classes.textField}
+                  />
                   <Select
                     value={challenger.player.action}
                     onChange={this.setAction(challenger.player)}
@@ -227,6 +285,19 @@ class App extends Component {
                     <Grid item sm={12} md={6} key={index}>
                       <Paper className={classes.paper}>
                         <h2>Voter</h2>
+                        <TextField
+                          id="number"
+                          label="Tokens"
+                          value={voter.player.tokens}
+                          onChange={this.setPlayerProperty(voter.player, "tokens")}
+                          type="number"
+                          inputProps={{ min: "0" }}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          margin="normal"
+                          className={classes.textField}
+                        />
                         <Select
                           value={voter.player.action}
                           onChange={this.setAction(voter.player)}
