@@ -158,6 +158,7 @@ class App extends Component {
                 value={tcr.applicationEffort}
                 onChange={this.setGameProperty("applicationEffort")}
                 type="number"
+                inputProps={{ min: "0" }}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -170,6 +171,7 @@ class App extends Component {
                 value={tcr.challengeEffort}
                 onChange={this.setGameProperty("challengeEffort")}
                 type="number"
+                inputProps={{ min: "0" }}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -182,6 +184,7 @@ class App extends Component {
                 value={tcr.voteEffort}
                 onChange={this.setGameProperty("voteEffort")}
                 type="number"
+                inputProps={{ min: "0" }}
                 InputLabelProps={{
                   shrink: true,
                 }}
