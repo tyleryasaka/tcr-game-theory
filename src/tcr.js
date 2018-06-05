@@ -257,12 +257,25 @@ class TCR {
   }
 
   getGameData() {
+    const candidate = this.players[this.candidate]
+    const challenger = this.players[this.challenger]
+    const voters = this.getEligibleVoters()
     return {
-      players: this.players.map((player) => {
+      candidate: {
+        player: candidate,
+        payoffs: this.getCandidatePayoff(candidate),
+        isBestStrategy: this.isBestStrategy(candidate)
+      },
+      challenger: {
+        player: challenger,
+        payoffs: this.getChallengerPayoff(challenger),
+        isBestStrategy: this.isBestStrategy(challenger)
+      },
+      voters: voters.map((voter) => {
         return {
-          player,
-          payoffs: this.getPlayerPayoff(player),
-          isBestStrategy: this.isBestStrategy(player)
+          player: voter,
+          payoffs: this.getPlayerPayoff(voter),
+          isBestStrategy: this.isBestStrategy(voter)
         }
       }),
       isEquilibrium: this.isEquilibrium()
