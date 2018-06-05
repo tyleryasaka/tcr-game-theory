@@ -62,7 +62,7 @@ class TCR {
     this.voteEffort = voteEffort
   }
 
-  getCandidatePayoff() {
+  getCandidateMatrix() {
     const columnAccept = 'accept'
     const columnReject = 'reject'
     const columnNotChallenge = 'not_challenge'
@@ -73,14 +73,13 @@ class TCR {
     const challengeResult = getVerdict(this.getEligibleVoters(), this.voteQuorum) ? columnAccept : columnReject
     const columnSelected = !isChallenged ? columnNotChallenge : challengeResult
 
-    let matrix = {}, payoffs = []
+    let matrix = {}
 
     if (validActions.includes(actionApply)) {
       matrix[actionApply] = {}
       matrix[actionApply][columnAccept] = candidate.registryValue + this.minDeposit * this.dispensationPct  - this.challengeEffort
       matrix[actionApply][columnReject] = -1 * this.minDeposit  - this.challengeEffort
       matrix[actionApply][columnNotChallenge] = candidate.registryValue - this.challengeEffort
-      payoffs.push(new Payoff({ action: actionApply, value: matrix[actionApply][columnSelected] }))
     }
 
     if (validActions.includes(actionNotApply)) {
@@ -88,13 +87,16 @@ class TCR {
       matrix[actionNotApply][columnAccept] = 0
       matrix[actionNotApply][columnReject] = 0
       matrix[actionNotApply][columnNotChallenge] = 0
-      payoffs.push(new Payoff({ action: actionNotApply, value: matrix[actionNotApply][columnSelected] }))
     }
 
-    return payoffs
+    let selectedColumns = {}
+    selectedColumns[actionApply] = columnSelected
+    selectedColumns[actionNotApply] = columnSelected
+
+    return { matrix, selectedColumns }
   }
 
-  getChallengerPayoff() {
+  getChallengerMatrix() {
     const columnWin = 'win'
     const columnLose = 'lose'
 
@@ -105,26 +107,28 @@ class TCR {
     const columnSelected = getVerdict(this.getEligibleVoters(), this.voteQuorum) ? columnLose : columnWin
     const tokenValueChange = this.getTokenAppreciation() * challenger.tokens
 
-    let matrix = {}, payoffs = []
+    let matrix = {}
 
     if (validActions.includes(actionChallenge)) {
       matrix[actionChallenge] = {}
       matrix[actionChallenge][columnWin] = this.minDeposit * this.dispensationPct - this.challengeEffort
       matrix[actionChallenge][columnLose] = tokenValueChange - this.minDeposit - this.challengeEffort
-      payoffs.push(new Payoff({ action: actionChallenge, value: matrix[actionChallenge][columnSelected] }))
     }
 
     if (validActions.includes(actionNotChallenge)) {
       matrix[actionNotChallenge] = {}
       matrix[actionNotChallenge][columnWin] = tokenValueChange
       matrix[actionNotChallenge][columnLose] = tokenValueChange
-      payoffs.push(new Payoff({ action: actionNotChallenge, value: matrix[actionNotChallenge][columnSelected] }))
     }
 
-    return payoffs
+    let selectedColumns = {}
+    selectedColumns[actionChallenge] = columnSelected
+    selectedColumns[actionNotChallenge] = columnSelected
+
+    return { matrix, selectedColumns }
   }
 
-  getVoterPayoff({ id }) {
+  getVoterMatrix({ id }) {
     const columnAccept = 'accept'
     const columnReject = 'reject'
 
@@ -136,8 +140,8 @@ class TCR {
     })
 
     // hypothetical voting choices
-    const withMeAccepting = otherVoters.concat(new Player({ tokens: voter.tokens, action: actionAccept }))
-    const withMeRejecting = otherVoters.concat(new Player({ tokens: voter.tokens, action: actionReject }))
+    const withMeAccepting = otherVoters.concat(new Player({ tokens: voter.tokens, action: actionAccept, registryValue: 1000 }))
+    const withMeRejecting = otherVoters.concat(new Player({ tokens: voter.tokens, action: actionReject, registryValue: 1001 }))
 
     // tokens excluding voter
     const acceptBlocTokens = getAcceptBlocTokens(otherVoters)
@@ -155,30 +159,32 @@ class TCR {
 
     const tokenValueChange = this.getTokenAppreciation() * voter.tokens
 
-    let matrix = {}, payoffs = []
+    let matrix = {}
 
     if (validActions.includes(actionAccept)) {
       matrix[actionAccept] = {}
       matrix[actionAccept][columnAccept] = tokenValueChange + (1 - this.dispensationPct) * this.minDeposit + rejectBlocTokens * this.minorityBlocSlash * percentOfAcceptBloc - this.voteEffort
       matrix[actionAccept][columnReject] = -1 * voter.tokens * this.minorityBlocSlash - this.voteEffort
-      payoffs.push(new Payoff({ action: actionAccept, value: matrix[actionAccept][columnIfIAccept] }))
     }
 
     if (validActions.includes(actionReject)) {
       matrix[actionReject] = {}
       matrix[actionReject][columnAccept] = tokenValueChange - (voter.tokens * this.minorityBlocSlash) - this.voteEffort
       matrix[actionReject][columnReject] = (1 - this.dispensationPct) * this.minDeposit + acceptBlocTokens * this.minorityBlocSlash * percentOfRejectBloc - this.voteEffort
-      payoffs.push(new Payoff({ action: actionReject, value: matrix[actionReject][columnIfIReject] }))
     }
 
     if (validActions.includes(actionAbstain)) {
       matrix[actionAbstain] = {}
       matrix[actionAbstain][columnAccept] = tokenValueChange
       matrix[actionAbstain][columnReject] = 0
-      payoffs.push(new Payoff({ action: actionAbstain, value: matrix[actionAbstain][columnIfIAbstain] }))
     }
 
-    return payoffs
+    let selectedColumns = {}
+    selectedColumns[actionAccept] = columnIfIAccept
+    selectedColumns[actionReject] = columnIfIReject
+    selectedColumns[actionAbstain] = columnIfIAbstain
+
+    return { matrix, selectedColumns }
   }
 
   getIsChallenged() {
@@ -209,14 +215,14 @@ class TCR {
     return this.players.filter(({ id }) => id === playerId)[0]
   }
 
-  getPlayerPayoff(player) {
+  getPlayerMatrix(player) {
     let payoff
     if (player.id === this.candidate) {
-      payoff = this.getCandidatePayoff()
+      payoff = this.getCandidateMatrix()
     } else if (player.id === this.challenger) {
-      payoff = this.getChallengerPayoff()
+      payoff = this.getChallengerMatrix()
     } else {
-      payoff = this.getVoterPayoff(player)
+      payoff = this.getVoterMatrix(player)
     }
     return payoff
   }
@@ -240,15 +246,22 @@ class TCR {
     return validActions.includes(player.action) ? player.action : validActions[0]
   }
 
+  getPayoff({ matrix, selectedColumns }, selectedAction) {
+    const column = selectedColumns[selectedAction]
+    return matrix[selectedAction][column]
+  }
+
   isBestStrategy(player) {
-    const payoffs = this.getPlayerPayoff(player)
+    const payoffs = this.getPlayerMatrix(player)
     const selectedAction = this.getPlayerAction(player)
-    const maxPayoff = payoffs.reduce((max, { value }) => {
-      return value > max ? value : max
-    }, payoffs[0].value)
-    const payoffForSelected = payoffs.filter(({ action }) => {
-      return action === selectedAction
-    })[0].value
+    let maxPayoff
+    for (let action in payoffs.matrix) {
+      const value = this.getPayoff(payoffs, action)
+      if ((typeof maxPayoff === 'undefined') || (value > maxPayoff)) {
+        maxPayoff = value
+      }
+    }
+    const payoffForSelected = this.getPayoff(payoffs, selectedAction)
     return payoffForSelected === maxPayoff
   }
 
@@ -259,24 +272,24 @@ class TCR {
   }
 
   getGameData() {
-    const candidate = this.players[this.candidate]
-    const challenger = this.players[this.challenger]
+    const candidate = this.getPlayer(this.candidate)
+    const challenger = this.getPlayer(this.challenger)
     const voters = this.getEligibleVoters()
     return {
       candidate: {
         player: candidate,
-        payoffs: this.getCandidatePayoff(candidate),
+        payoffs: this.getCandidateMatrix(candidate),
         isBestStrategy: this.isBestStrategy(candidate)
       },
       challenger: {
         player: challenger,
-        payoffs: this.getChallengerPayoff(challenger),
+        payoffs: this.getChallengerMatrix(challenger),
         isBestStrategy: this.isBestStrategy(challenger)
       },
       voters: voters.map((voter) => {
         return {
           player: voter,
-          payoffs: this.getPlayerPayoff(voter),
+          payoffs: this.getVoterMatrix(voter),
           isBestStrategy: this.isBestStrategy(voter)
         }
       }),
