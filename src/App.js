@@ -12,8 +12,8 @@ import { withStyles } from '@material-ui/core/styles';
 import logo from './logo.svg';
 import './App.css';
 import {
-  actionList,
-  actionNotList,
+  actionApply,
+  actionNotApply,
   actionChallenge,
   actionNotChallenge,
   actionAccept,
@@ -52,7 +52,7 @@ class App extends Component {
       voteEffort: 0,
       players: [
         new Player({ tokens: 6, action: actionChallenge }),
-        new Player({ tokens: 5, action: actionNotList, registryValue: 100, quality: 0.1 }),
+        new Player({ tokens: 5, action: actionNotApply, registryValue: 100, quality: 0.1 }),
         new Player({ tokens: 10, action: actionReject }),
         new Player({ tokens: 10, action: actionReject }),
         new Player({ tokens: 10, action: actionReject }),
@@ -202,8 +202,8 @@ class App extends Component {
                     value={candidate.player.action}
                     onChange={this.setAction(candidate.player)}
                   >
-                    <MenuItem value={actionList}>Apply</MenuItem>
-                    <MenuItem value={actionNotList}>Don't Apply</MenuItem>
+                    <MenuItem value={actionApply}>Apply</MenuItem>
+                    <MenuItem value={actionNotApply}>Don't Apply</MenuItem>
                   </Select>
                 </Paper>
               </Grid>

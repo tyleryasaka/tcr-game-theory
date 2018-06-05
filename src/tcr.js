@@ -1,7 +1,7 @@
 let playerCounter = 0
 
-const actionList = 'list'
-const actionNotList = 'not_list'
+const actionApply = 'apply'
+const actionNotApply = 'not_apply'
 
 const actionChallenge = 'challenge'
 const actionNotChallenge = 'not_challenge'
@@ -75,20 +75,20 @@ class TCR {
 
     let matrix = {}, payoffs = []
 
-    if (validActions.includes(actionList)) {
-      matrix[actionList] = {}
-      matrix[actionList][columnAccept] = candidate.registryValue + this.minDeposit * this.dispensationPct  - this.challengeEffort
-      matrix[actionList][columnReject] = -1 * this.minDeposit  - this.challengeEffort
-      matrix[actionList][columnNotChallenge] = candidate.registryValue - this.challengeEffort
-      payoffs.push(new Payoff({ action: actionList, value: matrix[actionList][columnSelected] }))
+    if (validActions.includes(actionApply)) {
+      matrix[actionApply] = {}
+      matrix[actionApply][columnAccept] = candidate.registryValue + this.minDeposit * this.dispensationPct  - this.challengeEffort
+      matrix[actionApply][columnReject] = -1 * this.minDeposit  - this.challengeEffort
+      matrix[actionApply][columnNotChallenge] = candidate.registryValue - this.challengeEffort
+      payoffs.push(new Payoff({ action: actionApply, value: matrix[actionApply][columnSelected] }))
     }
 
-    if (validActions.includes(actionNotList)) {
-      matrix[actionNotList] = {}
-      matrix[actionNotList][columnAccept] = 0
-      matrix[actionNotList][columnReject] = 0
-      matrix[actionNotList][columnNotChallenge] = 0
-      payoffs.push(new Payoff({ action: actionNotList, value: matrix[actionNotList][columnSelected] }))
+    if (validActions.includes(actionNotApply)) {
+      matrix[actionNotApply] = {}
+      matrix[actionNotApply][columnAccept] = 0
+      matrix[actionNotApply][columnReject] = 0
+      matrix[actionNotApply][columnNotChallenge] = 0
+      payoffs.push(new Payoff({ action: actionNotApply, value: matrix[actionNotApply][columnSelected] }))
     }
 
     return payoffs
@@ -226,7 +226,7 @@ class TCR {
     const canDeposit = player.tokens >= this.minDeposit
     let validActions
     if (player.id === this.candidate) {
-      validActions = canDeposit ? [actionList, actionNotList] : [actionNotList]
+      validActions = canDeposit ? [actionApply, actionNotApply] : [actionNotApply]
     } else if (player.id === this.challenger) {
       validActions = canDeposit ? [actionChallenge, actionNotChallenge] : [actionNotChallenge]
     } else {
@@ -308,8 +308,8 @@ function getVerdict(voters, voteQuorum) {
 }
 
 module.exports = {
-  actionList,
-  actionNotList,
+  actionApply,
+  actionNotApply,
   actionChallenge,
   actionNotChallenge,
   actionAccept,
