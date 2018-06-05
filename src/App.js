@@ -47,6 +47,7 @@ class App extends Component {
       dispensationPct: 0.5,
       minorityBlocSlash: 0.1,
       voteQuorum: 0.5,
+      applicationEffort: 0,
       challengeEffort: 0,
       voteEffort: 0,
       players: [
@@ -151,6 +152,18 @@ class App extends Component {
           <Grid item sm={12}>
             <Paper className={classes.paper}>
               <h2>External Parameters</h2>
+              <TextField
+                id="number"
+                label="Application Effort"
+                value={tcr.applicationEffort}
+                onChange={this.setGameProperty("applicationEffort")}
+                type="number"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                margin="normal"
+                className={classes.textField}
+              />
               <TextField
                 id="number"
                 label="Challenge Effort"

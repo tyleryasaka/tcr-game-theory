@@ -45,6 +45,7 @@ class TCR {
     dispensationPct,
     minorityBlocSlash,
     voteQuorum,
+    applicationEffort,
     challengeEffort,
     voteEffort
   } = {}) {
@@ -56,6 +57,7 @@ class TCR {
     this.dispensationPct = dispensationPct
     this.minorityBlocSlash = minorityBlocSlash
     this.voteQuorum = voteQuorum
+    this.applicationEffort = applicationEffort
     this.challengeEffort = challengeEffort
     this.voteEffort = voteEffort
   }
@@ -75,9 +77,9 @@ class TCR {
 
     if (validActions.includes(actionList)) {
       matrix[actionList] = {}
-      matrix[actionList][columnAccept] = candidate.registryValue + this.minDeposit * this.dispensationPct
-      matrix[actionList][columnReject] = -1 * this.minDeposit
-      matrix[actionList][columnNotChallenge] = candidate.registryValue
+      matrix[actionList][columnAccept] = candidate.registryValue + this.minDeposit * this.dispensationPct  - this.challengeEffort
+      matrix[actionList][columnReject] = -1 * this.minDeposit  - this.challengeEffort
+      matrix[actionList][columnNotChallenge] = candidate.registryValue - this.challengeEffort
       payoffs.push(new Payoff({ action: actionList, value: matrix[actionList][columnSelected] }))
     }
 
