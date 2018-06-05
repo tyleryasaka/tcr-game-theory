@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import DecisionMatrix from './DecisionMatrix.js';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
@@ -53,7 +54,7 @@ class App extends Component {
       players: [
         new Player({ tokens: 6, action: actionChallenge }),
         new Player({ tokens: 5, action: actionNotApply, registryValue: 100, quality: 1 }),
-        new Player({ tokens: 10, action: actionReject }),
+        new Player({ tokens: 10, action: actionAccept }),
         new Player({ tokens: 15, action: actionReject }),
         new Player({ tokens: 10, action: actionReject }),
         new Player({ tokens: 10, action: actionReject }),
@@ -94,7 +95,6 @@ class App extends Component {
       challenger,
       voters
     } = gameData;
-    console.log('tcr', tcr, candidate)
 
     return (
       <div className="App" className={classes.app}>
@@ -306,6 +306,7 @@ class App extends Component {
                           <MenuItem value={actionAccept}>Accept</MenuItem>
                           <MenuItem value={actionReject}>Reject</MenuItem>
                         </Select>
+                        <DecisionMatrix payoffs={voter.payoffs}/>
                       </Paper>
                     </Grid>
                   )
