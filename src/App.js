@@ -249,7 +249,7 @@ class App extends Component {
               <h2>Other Parameters</h2>
               <TextField
                 id="number"
-                label="Application Effort"
+                label="Application Cost"
                 value={tcr.applicationEffort}
                 onChange={this.setGameProperty("applicationEffort")}
                 type="number"
@@ -262,7 +262,7 @@ class App extends Component {
               />
               <TextField
                 id="number"
-                label="Challenge Effort"
+                label="Challenge Cost"
                 value={tcr.challengeEffort}
                 onChange={this.setGameProperty("challengeEffort")}
                 type="number"
@@ -275,7 +275,7 @@ class App extends Component {
               />
               <TextField
                 id="number"
-                label="Vote Effort"
+                label="Vote Cost"
                 value={tcr.voteEffort}
                 onChange={this.setGameProperty("voteEffort")}
                 type="number"
