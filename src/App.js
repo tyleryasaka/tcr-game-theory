@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import DecisionMatrix from './DecisionMatrix.js';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
+import Icon from '@material-ui/core/Icon';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -27,6 +28,12 @@ import {
 const styles = theme => ({
   app: {
     padding: theme.spacing.unit * 2,
+  },
+  success: {
+    color: "#43A047",
+  },
+  error: {
+    color: "#E53935",
   },
   paper: {
     padding: theme.spacing.unit * 2,
@@ -306,7 +313,13 @@ class App extends Component {
                           <MenuItem value={actionAccept}>Accept</MenuItem>
                           <MenuItem value={actionReject}>Reject</MenuItem>
                         </Select>
-                        <DecisionMatrix payoffs={voter.payoffs}/>
+                        {
+                          voter.player.action === voter.bestStrategy
+                            ? (<Icon className={classes.success}>check</Icon>)
+                            : (<Icon className={classes.error}>close</Icon>)
+                        }
+
+                        <DecisionMatrix voter={voter}/>
                       </Paper>
                     </Grid>
                   )

@@ -10,6 +10,9 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
+  bestStrategy: {
+    background: '#E8F5E9',
+  },
   badge: {
     paddingRight: theme.spacing.unit * 2,
   },
@@ -17,7 +20,7 @@ const styles = theme => ({
 
 class DecisionMatrix extends Component {
   isSelectedColumn(action, column) {
-    const { payoffs: { selectedColumns } } = this.props
+    const { voter: { payoffs: { selectedColumns } } } = this.props
     return selectedColumns[action] === column
   }
 
@@ -26,7 +29,8 @@ class DecisionMatrix extends Component {
   }
 
   render() {
-    const { isBestStrategy, payoffs: { matrix }, classes } = this.props
+    const { voter, classes } = this.props
+    const { bestStrategy, payoffs: { matrix } } = voter
     const actions = Object.keys(matrix)
     const firstAction = actions[0]
     const columns = Object.keys(matrix[firstAction])
@@ -49,7 +53,7 @@ class DecisionMatrix extends Component {
             return (
               <TableRow
                 key={action}
-                className={isBestStrategy}
+                className={action === bestStrategy ? classes.bestStrategy : ""}
               >
                 <TableCell component="th" scope="row">
                   {action}
