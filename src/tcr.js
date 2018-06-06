@@ -105,7 +105,7 @@ class TCR {
     const validActions = this.getValidActions(challenger)
 
     const columnSelected = getVerdict(this.getEligibleVoters(), this.voteQuorum) ? columnLose : columnWin
-    const tokenValueChange = this.getTokenAppreciation() * challenger.tokens
+    const tokenValueChange = challenger.tokens * (this.getTokenAppreciation() - 1)
 
     let matrix = {}
 
@@ -154,7 +154,7 @@ class TCR {
     const percentOfAcceptBloc = voter.tokens / (acceptBlocTokens + voter.tokens)
     const percentOfRejectBloc = voter.tokens / (rejectBlocTokens + voter.tokens)
 
-    const tokenValueChange = this.getTokenAppreciation() * voter.tokens
+    const tokenValueChange = voter.tokens * (this.getTokenAppreciation() - 1)
 
     let matrix = {}
 
