@@ -13,6 +13,16 @@ import { withStyles } from '@material-ui/core/styles';
 const styles = theme => ({
   bestStrategy: {
     background: '#E8F5E9',
+    cursor: 'pointer',
+    '&:hover': {
+      background: '#C8E6C9',
+    },
+  },
+  notBestStrategy: {
+    cursor: 'pointer',
+    '&:hover': {
+      background: '#F5F5F5',
+    },
   },
   badge: {
     paddingRight: theme.spacing.unit * 2,
@@ -61,7 +71,7 @@ class DecisionMatrix extends Component {
             return (
               <TableRow
                 key={row}
-                className={row === bestStrategy ? classes.bestStrategy : ""}
+                className={row === bestStrategy ? classes.bestStrategy : classes.notBestStrategy}
                 onClick={this.handleRowClick(row)}
               >
                 <TableCell component="th" scope="row">
