@@ -20,7 +20,7 @@ const styles = theme => ({
 
 class DecisionMatrix extends Component {
   isSelectedColumn(action, column) {
-    const { voter: { payoffs: { selectedColumns } } } = this.props
+    const { player: { payoffs: { selectedColumns } } } = this.props
     return selectedColumns[action] === column
   }
 
@@ -29,8 +29,8 @@ class DecisionMatrix extends Component {
   }
 
   render() {
-    const { voter, classes } = this.props
-    const { bestStrategy, payoffs: { matrix } } = voter
+    const { player, classes } = this.props
+    const { bestStrategy, payoffs: { matrix } } = player
     const actions = Object.keys(matrix)
     const firstAction = actions[0]
     const columns = Object.keys(matrix[firstAction])

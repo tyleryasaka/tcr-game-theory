@@ -257,6 +257,12 @@ class App extends Component {
                     <MenuItem value={actionApply}>Apply</MenuItem>
                     <MenuItem value={actionNotApply}>Don't Apply</MenuItem>
                   </Select>
+                  {
+                    candidate.player.action === candidate.bestStrategy
+                      ? (<Icon className={classes.success}>check</Icon>)
+                      : (<Icon className={classes.error}>close</Icon>)
+                  }
+                  <DecisionMatrix player={candidate}/>
                 </Paper>
               </Grid>
               <Grid item sm={12} md={6}>
@@ -282,6 +288,12 @@ class App extends Component {
                     <MenuItem value={actionChallenge}>Challenge</MenuItem>
                     <MenuItem value={actionNotChallenge}>Don't Challenge</MenuItem>
                   </Select>
+                  {
+                    challenger.player.action === challenger.bestStrategy
+                      ? (<Icon className={classes.success}>check</Icon>)
+                      : (<Icon className={classes.error}>close</Icon>)
+                  }
+                  <DecisionMatrix player={challenger}/>
                 </Paper>
               </Grid>
             </Grid>
@@ -318,8 +330,7 @@ class App extends Component {
                             ? (<Icon className={classes.success}>check</Icon>)
                             : (<Icon className={classes.error}>close</Icon>)
                         }
-
-                        <DecisionMatrix voter={voter}/>
+                        <DecisionMatrix player={voter}/>
                       </Paper>
                     </Grid>
                   )
