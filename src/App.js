@@ -428,17 +428,17 @@ class App extends Component {
                 }
               </Typography>
               <br />
-              <Typography align="left">
+              <div>
                 {
                   this.getOutcomeNarration(gameData).map((text, index) => {
                     return (
-                      <div key={index}>
+                      <Typography key={index} align="left">
                         {text}
-                      </div>
+                      </Typography>
                     )
                   })
                 }
-              </Typography>
+              </div>
             </Paper>
           </Grid>
         </Grid>
