@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DecisionMatrix from './DecisionMatrix.js';
+import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
 import Icon from '@material-ui/core/Icon';
@@ -10,6 +11,7 @@ import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
 import Switch from '@material-ui/core/Switch';
 import TextField from '@material-ui/core/TextField';
+import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import logo from './logo.svg';
 import './App.css';
@@ -64,10 +66,10 @@ class App extends Component {
       challengeEffort: 0,
       voteEffort: 0,
       players: [
-        new Player({ tokens: 6, action: actionChallenge }),
+        new Player({ tokens: 5, action: actionChallenge }),
         new Player({ tokens: 5, action: actionApply, registryValue: 100, quality: 1 }),
         new Player({ tokens: 10, action: actionAbstain }),
-        new Player({ tokens: 15, action: actionAbstain }),
+        new Player({ tokens: 10, action: actionAbstain }),
         new Player({ tokens: 10, action: actionAbstain }),
       ]
     })
@@ -350,21 +352,14 @@ class App extends Component {
           <Grid item sm={12}>
             <Paper className={classes.paper}>
               <h2>Outcome</h2>
-              <List>
-                <ListItem>
-                  <div>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={gameData.isEquilibrium}
-                          color="primary"
-                        />
-                      }
-                      label="Equilibrium"
-                    />
-                  </div>
-                </ListItem>
-              </List>
+              <span>
+                Equilibrium?
+                {
+                  gameData.isEquilibrium
+                    ? (<Icon style={{ fontSize: 22 }} className={classes.success}>check</Icon>)
+                    : (<Icon style={{ fontSize: 22 }} className={classes.error}>close</Icon>)
+                }
+              </span>
             </Paper>
           </Grid>
         </Grid>
