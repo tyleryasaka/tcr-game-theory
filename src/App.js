@@ -112,6 +112,73 @@ class App extends Component {
     }
   }
 
+  getOutcomeNarration(gameData) {
+    const {
+      isEquilibrium,
+      candidate,
+      challenger,
+      verdict,
+      voters
+    } = gameData
+
+    const didApply = candidate.player.action === actionApply
+    const didChallenge = challenger.player.action === actionChallenge
+    const didApprove = verdict
+    const yay = voters.filter(({ player: { action } }) => {
+      return action === actionAccept
+    }).length
+    const nay = voters.filter(({ player: { action } }) => {
+      return action === actionReject
+    }).length
+
+    const equilibriumText = isEquilibrium
+      ? 'This game is in equilibrium.'
+      : 'This game is not in equilibrium.'
+
+    const scenarioText = isEquilibrium
+      ? 'In this scenario:'
+      : 'However, in this scenario:'
+
+    const applyText = didApply
+      ? 'the candidate applied to be listed in the registry,'
+      : 'the candidate did not apply to be listed in the registry,'
+
+    const challengeTense = didApply
+      ? 'was'
+      : 'would have been'
+
+    const challengeText = didChallenge
+      ? `but the listing ${challengeTense} challenged by a token holder.`
+      : `and the listing ${challengeTense} not challenged.`
+
+    const voteText = didChallenge
+      ? `A vote ${challengeTense} taken, and`
+      : `Had it been challenged,`
+
+    const verdictTense = didApply && didChallenge
+      ? 'was'
+      : 'would have been'
+
+    const tallyText = `with a vote of ${yay}:${nay} (approve:reject).`
+
+    const verdictText = didApprove
+      ? `the listing ${verdictTense} approved`
+      : `the listing ${verdictTense} rejected`
+
+    console.log('getting', [
+      `${equilibriumText}`,
+      `${scenarioText} ${applyText} ${challengeText}`,
+      `${voteText} ${verdictText} ${tallyText}`,
+    ])
+
+    return [
+      `${equilibriumText}`,
+      `${scenarioText} ${applyText} ${challengeText}`,
+      `${voteText} ${verdictText} ${tallyText}`,
+    ]
+  }
+
+
   render() {
     const { classes } = this.props;
     const { tcr } = this.state;
@@ -352,14 +419,26 @@ class App extends Component {
           <Grid item sm={12}>
             <Paper className={classes.paper}>
               <h2>Outcome</h2>
-              <span>
+              <Typography>
                 Equilibrium?
                 {
                   gameData.isEquilibrium
                     ? (<Icon style={{ fontSize: 22 }} className={classes.success}>check</Icon>)
                     : (<Icon style={{ fontSize: 22 }} className={classes.error}>close</Icon>)
                 }
-              </span>
+              </Typography>
+              <br />
+              <Typography align="left">
+                {
+                  this.getOutcomeNarration(gameData).map((text, index) => {
+                    return (
+                      <div key={index}>
+                        {text}
+                      </div>
+                    )
+                  })
+                }
+              </Typography>
             </Paper>
           </Grid>
         </Grid>
