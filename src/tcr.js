@@ -251,27 +251,26 @@ class TCR {
     return matrix[selectedAction][column]
   }
 
-  getMaxPayoff(player, payoffs) {
-    let maxPayoff
-    for (let action in payoffs.matrix) {
+  getBestStrategy(player, payoffs) {
+    const actions = Object.keys(payoffs.matrix)
+    const firstAction = actions[0]
+    return actions.slice(1).reduce((bestAction, action) => {
       const value = this.getPayoff(payoffs, action)
-      if ((typeof maxPayoff === 'undefined') || (value > maxPayoff)) {
-        maxPayoff = value
-      }
-    }
+      const bestValue = this.getPayoff(payoffs, bestAction)
+      return value > bestValue ? action : bestAction
+    }, firstAction)
   }
 
-  isBestStrategy(player, payoffs, maxPayoff) {
+  isBestStrategy(player, payoffs) {
+    const bestStrategy = this.getBestStrategy(player, payoffs)
     const selectedAction = this.getPlayerAction(player)
-    const payoffForSelected = this.getPayoff(payoffs, selectedAction)
-    return payoffForSelected === maxPayoff
+    return bestStrategy === selectedAction
   }
 
   isEquilibrium() {
     return this.players.reduce((acc, player) => {
       const payoffs = this.getPlayerMatrix(player)
-      const maxPayoff = this.getMaxPayoff(player, payoffs)
-      return acc && this.isBestStrategy(player, payoffs, maxPayoff)
+      return acc && this.isBestStrategy(player, payoffs)
     }, true)
   }
 
@@ -280,32 +279,28 @@ class TCR {
 
     const candidate = this.getPlayer(this.candidate)
     const candidatePayoffs = this.getCandidateMatrix(candidate)
-    const candidateMaxPayoff = this.getMaxPayoff(candidate, candidatePayoffs)
 
     const challenger = this.getPlayer(this.challenger)
     const challengerPayoffs = this.getChallengerMatrix(challenger)
-    const challengerMaxPayoff = this.getMaxPayoff(challenger, challengerPayoffs)
 
     return {
       candidate: {
         player: candidate,
         payoffs: candidatePayoffs,
-        isBestStrategy: this.isBestStrategy(candidate, candidatePayoffs, candidateMaxPayoff)
+        bestStrategy: this.getBestStrategy(candidate, candidatePayoffs)
       },
       challenger: {
         player: challenger,
         payoffs: challengerPayoffs,
-        isBestStrategy: this.isBestStrategy(challenger, challengerPayoffs, challengerMaxPayoff)
+        bestStrategy: this.getBestStrategy(challenger, challengerPayoffs)
       },
       voters: voters.map((voter) => {
         const payoffs = this.getVoterMatrix(voter)
-        const maxPayoff = this.getMaxPayoff(voter, payoffs)
-        const isBestStrategy = this.isBestStrategy(voter, payoffs, maxPayoff)
+        const bestStrategy = this.getBestStrategy(voter, payoffs)
         return {
           player: voter,
           payoffs,
-          isBestStrategy,
-          maxPayoff
+          bestStrategy
         }
       }),
       isEquilibrium: this.isEquilibrium()
