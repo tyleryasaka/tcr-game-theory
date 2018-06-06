@@ -60,11 +60,11 @@ class App extends Component {
       voteEffort: 0,
       players: [
         new Player({ tokens: 6, action: actionChallenge }),
-        new Player({ tokens: 5, action: actionNotApply, registryValue: 100, quality: 1 }),
-        new Player({ tokens: 10, action: actionAccept }),
-        new Player({ tokens: 15, action: actionReject }),
-        new Player({ tokens: 10, action: actionReject }),
-        new Player({ tokens: 10, action: actionReject }),
+        new Player({ tokens: 5, action: actionApply, registryValue: 100, quality: 1 }),
+        new Player({ tokens: 10, action: actionAbstain }),
+        new Player({ tokens: 15, action: actionAbstain }),
+        new Player({ tokens: 10, action: actionAbstain }),
+        new Player({ tokens: 10, action: actionAbstain }),
       ]
     })
     tcr.challenger = tcr.players[0].id;
@@ -93,6 +93,19 @@ class App extends Component {
     }
   }
 
+  setVoters() {
+    return (e) => {
+      const { tcr } = this.state
+      const numVoters = Number(e.target.value);
+      const newVoters = new Array(numVoters).fill().map(() => {
+        return new Player({ tokens: 10, action: actionAbstain })
+      })
+      const players = tcr.players.slice(0, 2).concat(newVoters)
+      tcr.players = players
+      this.forceUpdate();
+    }
+  }
+
   render() {
     const { classes } = this.props;
     const { tcr } = this.state;
@@ -102,6 +115,7 @@ class App extends Component {
       challenger,
       voters
     } = gameData;
+    const numVoters = voters.length
 
     return (
       <div className="App" className={classes.app}>
@@ -165,7 +179,7 @@ class App extends Component {
           </Grid>
           <Grid item sm={12}>
             <Paper className={classes.paper}>
-              <h2>External Parameters</h2>
+              <h2>Other Parameters</h2>
               <TextField
                 id="number"
                 label="Application Effort"
@@ -199,6 +213,19 @@ class App extends Component {
                 onChange={this.setGameProperty("voteEffort")}
                 type="number"
                 inputProps={{ min: "0" }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                margin="normal"
+                className={classes.textField}
+              />
+              <TextField
+                id="number"
+                label="Number of Voters"
+                value={numVoters}
+                onChange={this.setVoters()}
+                type="number"
+                inputProps={{ min: "1" }}
                 InputLabelProps={{
                   shrink: true,
                 }}
