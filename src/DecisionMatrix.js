@@ -128,7 +128,7 @@ class DecisionMatrix extends Component {
             return (
               <TableRow
                 key={row}
-                class={row === action ? classes.selectedActionRow : classes.notSelectedActionRow}
+                className={row === action ? classes.selectedActionRow : classes.notSelectedActionRow}
                 onClick={this.handleRowClick(row)}
               >
                 <TableCell component="th" scope="row">
@@ -148,7 +148,7 @@ class DecisionMatrix extends Component {
                   return (
                     <TableCell numeric key={column} scope="row">
                       <span
-                        class={
+                        className={
                           (this.isSelectedColumn(row, column)
                             ? classes.isSelectedColumn
                             : classes.isNotSelectedColumn)
