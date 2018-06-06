@@ -326,6 +326,9 @@ function getRejectBlocTokens(voters) {
 function getVerdict(voters, voteQuorum) {
   const acceptBlocTokens = getAcceptBlocTokens(voters)
   const rejectBlocTokens = getRejectBlocTokens(voters)
+  if (acceptBlocTokens === 0 && rejectBlocTokens === 0) {
+    return true
+  }
   return acceptBlocTokens / (acceptBlocTokens + rejectBlocTokens) >= voteQuorum
 }
 
