@@ -69,7 +69,6 @@ class App extends Component {
         new Player({ tokens: 10, action: actionAbstain }),
         new Player({ tokens: 15, action: actionAbstain }),
         new Player({ tokens: 10, action: actionAbstain }),
-        new Player({ tokens: 10, action: actionAbstain }),
       ]
     })
     tcr.challenger = tcr.players[0].id;
@@ -125,7 +124,7 @@ class App extends Component {
     return (
       <div className="App" className={classes.app}>
         <Grid container spacing={24}>
-          <Grid item sm={12}>
+          <Grid item sm={6}>
             <Paper className={classes.paper}>
               <h2>TCR Parameters</h2>
               <TextField
@@ -182,7 +181,7 @@ class App extends Component {
               />
             </Paper>
           </Grid>
-          <Grid item sm={12}>
+          <Grid item sm={6}>
             <Paper className={classes.paper}>
               <h2>Other Parameters</h2>
               <TextField
@@ -241,7 +240,7 @@ class App extends Component {
           </Grid>
           <Grid item sm={12}>
             <Grid container spacing={24}>
-              <Grid item sm={12} md={6}>
+              <Grid item sm={6} md={6}>
                 <Paper className={candidate.player.action === candidate.bestStrategy ? classes.paperBestStrategy : classes.paper}>
                   <h2>Candidate</h2>
                   <TextField
@@ -290,7 +289,7 @@ class App extends Component {
                   <DecisionMatrix player={candidate} setAction={this.setAction()}/>
                 </Paper>
               </Grid>
-              <Grid item sm={12} md={6}>
+              <Grid item sm={6} md={6}>
                 <Paper className={challenger.player.action === challenger.bestStrategy ? classes.paperBestStrategy : classes.paper}>
                   <h2>Challenger</h2>
                   <TextField
@@ -319,7 +318,7 @@ class App extends Component {
               {
                 voters.map((voter, index) => {
                   return (
-                    <Grid item sm={12} md={6} key={index}>
+                    <Grid item sm={6} md={4} key={index}>
                       <Paper className={voter.player.action === voter.bestStrategy ? classes.paperBestStrategy : classes.paper}>
                         <h2>Voter</h2>
                         <TextField
