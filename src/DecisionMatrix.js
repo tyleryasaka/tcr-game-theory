@@ -9,6 +9,20 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
+import {
+  actionApply,
+  actionNotApply,
+  actionChallenge,
+  actionNotChallenge,
+  actionAccept,
+  actionReject,
+  actionAbstain,
+  columnAccept,
+  columnReject,
+  columnNotChallenge,
+  columnWin,
+  columnLose,
+} from './tcr'
 
 const styles = theme => ({
   selectedActionRow: {
@@ -26,6 +40,7 @@ const styles = theme => ({
     },
   },
   bestStrategy: {
+    'font-weight': 'bold',
     color: '#4CAF50',
   },
   notBestStrategy: {
@@ -58,6 +73,28 @@ class DecisionMatrix extends Component {
     }
   }
 
+  getActionName(action) {
+    let mapping = {}
+    mapping[actionApply] = 'Apply'
+    mapping[actionNotApply] = 'Don\'t Apply'
+    mapping[actionChallenge] = 'Challenge'
+    mapping[actionNotChallenge] = 'Don\'t Challenge'
+    mapping[actionAccept] = 'Accept'
+    mapping[actionReject] = 'Reject'
+    mapping[actionAbstain] = 'Abstain'
+    return mapping[action]
+  }
+
+  getColumnName(column) {
+    let mapping = {}
+    mapping[columnAccept] = 'Accepted'
+    mapping[columnReject] = 'Rejected'
+    mapping[columnNotChallenge] = 'Not Challenged'
+    mapping[columnWin] = 'Won'
+    mapping[columnLose] = 'Lost'
+    return mapping[column]
+  }
+
   render() {
     const { player, classes } = this.props
     const { bestStrategy, payoffs: { matrix }, player: { action } } = player
@@ -72,7 +109,7 @@ class DecisionMatrix extends Component {
             {columns.map((column) => {
               return (
                 <TableCell numeric key={column} component="th" scope="row">
-                  {column}
+                  {this.getColumnName(column)}
                 </TableCell>
               )
             })}
@@ -96,17 +133,21 @@ class DecisionMatrix extends Component {
                       ? (<Icon style={{ fontSize: 16 }}>star</Icon>)
                       : ''
                     }
-                    {row}
+                    {this.getActionName(row)}
                   </span>
                 </TableCell>
                 {columns.map((column) => {
                   return (
                     <TableCell numeric key={column} scope="row">
                       <span
-                        className={
-                          this.isSelectedColumn(row, column)
+                        class={
+                          (this.isSelectedColumn(row, column)
                             ? classes.isSelectedColumn
-                            : classes.isNotSelectedColumn
+                            : classes.isNotSelectedColumn)
+                          + ' '
+                          + (row === bestStrategy
+                            ? classes.bestStrategy
+                            : classes.notBestStrategy)
                         }
                       >
                         {this.round(matrix[row][column])}

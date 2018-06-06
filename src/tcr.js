@@ -10,6 +10,13 @@ const actionAccept = 'accept'
 const actionReject = 'reject'
 const actionAbstain = 'abstain'
 
+const columnAccept = 'accept'
+const columnReject = 'reject'
+const columnNotChallenge = 'not_challenge'
+
+const columnWin = 'win'
+const columnLose = 'lose'
+
 class Payoff {
   constructor({ action, value } = {}) {
     this.action = action
@@ -63,10 +70,6 @@ class TCR {
   }
 
   getCandidateMatrix() {
-    const columnAccept = 'accept'
-    const columnReject = 'reject'
-    const columnNotChallenge = 'not_challenge'
-
     const candidate = this.getPlayer(this.candidate)
     const validActions = this.getValidActions(candidate)
     const isChallenged = this.getIsChallenged()
@@ -97,9 +100,6 @@ class TCR {
   }
 
   getChallengerMatrix() {
-    const columnWin = 'win'
-    const columnLose = 'lose'
-
     const candidate = this.getPlayer(this.candidate)
     const challenger = this.getPlayer(this.challenger)
     const validActions = this.getValidActions(challenger)
@@ -129,9 +129,6 @@ class TCR {
   }
 
   getVoterMatrix({ id }) {
-    const columnAccept = 'accept'
-    const columnReject = 'reject'
-
     const voter = this.getPlayer(id)
     const validActions = this.getValidActions(voter)
 
@@ -338,6 +335,11 @@ module.exports = {
   actionAccept,
   actionReject,
   actionAbstain,
+  columnAccept,
+  columnReject,
+  columnNotChallenge,
+  columnWin,
+  columnLose,
   Player,
   TCR
 }
