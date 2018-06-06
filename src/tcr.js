@@ -300,6 +300,7 @@ class TCR {
           bestStrategy
         }
       }),
+      verdict: getVerdict(voters, this.voteQuorum),
       isEquilibrium: this.isEquilibrium()
     }
   }
