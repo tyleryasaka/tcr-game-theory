@@ -198,7 +198,7 @@ class TCR {
   getTokenAppreciation() {
     const currentQuality = 100 // just stubbing this in for now
     const candidate = this.getPlayer(this.candidate)
-    const addedQuality = candidate.quality || 0
+    const addedQuality = Number(candidate.quality) || 0
     return (currentQuality + addedQuality) / currentQuality
   }
 
