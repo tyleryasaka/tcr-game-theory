@@ -33,9 +33,14 @@ const styles = theme => ({
     color: "#43A047",
   },
   error: {
-    color: "#E53935",
   },
   paper: {
+    padding: theme.spacing.unit * 2,
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+  paperBestStrategy: {
+    background: '#E8F5E9',
     padding: theme.spacing.unit * 2,
     textAlign: 'center',
     color: theme.palette.text.secondary,
@@ -237,7 +242,7 @@ class App extends Component {
           <Grid item sm={12}>
             <Grid container spacing={24}>
               <Grid item sm={12} md={6}>
-                <Paper className={classes.paper}>
+                <Paper className={candidate.player.action === candidate.bestStrategy ? classes.paperBestStrategy : classes.paper}>
                   <h2>Candidate</h2>
                   <TextField
                     id="number"
@@ -286,7 +291,7 @@ class App extends Component {
                 </Paper>
               </Grid>
               <Grid item sm={12} md={6}>
-                <Paper className={classes.paper}>
+                <Paper className={challenger.player.action === challenger.bestStrategy ? classes.paperBestStrategy : classes.paper}>
                   <h2>Challenger</h2>
                   <TextField
                     id="number"
@@ -315,7 +320,7 @@ class App extends Component {
                 voters.map((voter, index) => {
                   return (
                     <Grid item sm={12} md={6} key={index}>
-                      <Paper className={classes.paper}>
+                      <Paper className={voter.player.action === voter.bestStrategy ? classes.paperBestStrategy : classes.paper}>
                         <h2>Voter</h2>
                         <TextField
                           id="number"

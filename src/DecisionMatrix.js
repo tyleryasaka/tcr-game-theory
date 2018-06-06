@@ -11,18 +11,30 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
-  bestStrategy: {
-    background: '#E8F5E9',
-    cursor: 'pointer',
+  selectedActionRow: {
+    background: '#F5F5F5',
     '&:hover': {
-      background: '#C8E6C9',
+      cursor: 'pointer',
+      background: '#EEEEEE',
     },
   },
-  notBestStrategy: {
-    cursor: 'pointer',
+  notSelectedActionRow: {
+    background: '#FFFFFF',
     '&:hover': {
-      background: '#F5F5F5',
+      cursor: 'pointer',
+      background: '#FAFAFA',
     },
+  },
+  bestStrategy: {
+    color: '#4CAF50',
+  },
+  notBestStrategy: {
+  },
+  isSelectedColumn: {
+    opacity: 1,
+  },
+  isNotSelectedColumn: {
+    opacity: 0.2,
   },
   badge: {
     paddingRight: theme.spacing.unit * 2,
@@ -71,32 +83,34 @@ class DecisionMatrix extends Component {
             return (
               <TableRow
                 key={row}
-                className={row === bestStrategy ? classes.bestStrategy : classes.notBestStrategy}
+                class={row === action ? classes.selectedActionRow : classes.notSelectedActionRow}
                 onClick={this.handleRowClick(row)}
               >
                 <TableCell component="th" scope="row">
-                <Radio
-                  color="primary"
-                  checked={row === action}
-                />
-                  {row}
+                  <Radio
+                    color="primary"
+                    checked={row === action}
+                  />
+                  <span className={row === bestStrategy ? classes.bestStrategy : classes.notBestStrategy}>
+                    {row === bestStrategy
+                      ? (<Icon style={{ fontSize: 16 }}>star</Icon>)
+                      : ''
+                    }
+                    {row}
+                  </span>
                 </TableCell>
                 {columns.map((column) => {
                   return (
                     <TableCell numeric key={column} scope="row">
-                      {(<Badge
-                          color="primary"
-                          className={classes.badge}
-                          badgeContent={(
-                            <Icon>{
-                              this.isSelectedColumn(row, column)
-                                ? "radio_button_unchecked"
-                                : "lens"
-                            }</Icon>
-                          )}
-                        >
-                        <Typography>{this.round(matrix[row][column])}</Typography>
-                      </Badge>)}
+                      <span
+                        className={
+                          this.isSelectedColumn(row, column)
+                            ? classes.isSelectedColumn
+                            : classes.isNotSelectedColumn
+                        }
+                      >
+                        {this.round(matrix[row][column])}
+                      </span>
                     </TableCell>
                   )
                 })}
