@@ -80,9 +80,9 @@ class TCR {
 
     if (validActions.includes(actionApply)) {
       matrix[actionApply] = {}
-      matrix[actionApply][columnAccept] = candidate.registryValue + this.minDeposit * this.dispensationPct  - this.challengeEffort
-      matrix[actionApply][columnReject] = -1 * this.minDeposit  - this.challengeEffort
-      matrix[actionApply][columnNotChallenge] = candidate.registryValue - this.challengeEffort
+      matrix[actionApply][columnAccept] = candidate.registryValue + this.minDeposit * this.dispensationPct  - this.applicationEffort
+      matrix[actionApply][columnReject] = -1 * this.minDeposit  - this.applicationEffort
+      matrix[actionApply][columnNotChallenge] = candidate.registryValue - this.applicationEffort
     }
 
     if (validActions.includes(actionNotApply)) {
