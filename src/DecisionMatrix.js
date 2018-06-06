@@ -96,8 +96,9 @@ class DecisionMatrix extends Component {
   }
 
   render() {
-    const { player, classes } = this.props
-    const { bestStrategy, payoffs: { matrix }, player: { action } } = player
+    const { player, classes, tcr } = this.props
+    const { bestStrategy, payoffs, player: { action } } = player
+    const { matrix } = payoffs
     const actions = Object.keys(matrix)
     const firstAction = actions[0]
     const columns = Object.keys(matrix[firstAction])
@@ -136,10 +137,11 @@ class DecisionMatrix extends Component {
                     color="primary"
                     checked={row === action}
                   />
-                  <span className={row === bestStrategy ? classes.bestStrategy : classes.notBestStrategy}>
-                    {row === bestStrategy
-                      ? (<Icon style={{ fontSize: 16 }}>star</Icon>)
-                      : ''
+                  <span className={tcr.isBestStrategy(row, payoffs) ? classes.bestStrategy : classes.notBestStrategy}>
+                    {
+                      tcr.isBestStrategy(row, payoffs)
+                        ? (<Icon style={{ fontSize: 16 }}>star</Icon>)
+                        : ''
                     }
                     {this.getActionName(row)}
                   </span>
@@ -153,7 +155,7 @@ class DecisionMatrix extends Component {
                             ? classes.isSelectedColumn
                             : classes.isNotSelectedColumn)
                           + ' '
-                          + (row === bestStrategy
+                          + (tcr.isBestStrategy(row, payoffs)
                             ? classes.bestStrategy
                             : classes.notBestStrategy)
                         }

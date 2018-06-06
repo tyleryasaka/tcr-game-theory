@@ -258,16 +258,16 @@ class TCR {
     }, firstAction)
   }
 
-  isBestStrategy(player, payoffs) {
-    const bestStrategy = this.getBestStrategy(player, payoffs)
-    const selectedAction = this.getPlayerAction(player)
-    return bestStrategy === selectedAction
+  isBestStrategy(action, payoffs) {
+    const bestStrategy = this.getBestStrategy(action, payoffs)
+    return this.getPayoff(payoffs, bestStrategy) === this.getPayoff(payoffs, action)
   }
 
   isEquilibrium() {
     return this.players.reduce((acc, player) => {
       const payoffs = this.getPlayerMatrix(player)
-      return acc && this.isBestStrategy(player, payoffs)
+      const selectedAction = this.getPlayerAction(player)
+      return acc && this.isBestStrategy(selectedAction, payoffs)
     }, true)
   }
 

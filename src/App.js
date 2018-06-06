@@ -304,7 +304,7 @@ class App extends Component {
           <Grid item sm={12}>
             <Grid container spacing={24}>
               <Grid item sm={6} md={6}>
-                <Paper className={candidate.player.action === candidate.bestStrategy ? classes.paperBestStrategy : classes.paper}>
+                <Paper className={tcr.isBestStrategy(candidate.player.action, candidate.payoffs) ? classes.paperBestStrategy : classes.paper}>
                   <h2>Candidate</h2>
                   <TextField
                     id="number"
@@ -349,11 +349,15 @@ class App extends Component {
                       ? (<Icon className={classes.success}>check</Icon>)
                       : (<Icon className={classes.error}>close</Icon>)
                   }
-                  <DecisionMatrix player={candidate} setAction={this.setAction()}/>
+                  <DecisionMatrix
+                    player={candidate}
+                    setAction={this.setAction()}
+                    tcr={tcr}
+                  />
                 </Paper>
               </Grid>
               <Grid item sm={6} md={6}>
-                <Paper className={challenger.player.action === challenger.bestStrategy ? classes.paperBestStrategy : classes.paper}>
+                <Paper className={tcr.isBestStrategy(challenger.player.action, challenger.payoffs) ? classes.paperBestStrategy : classes.paper}>
                   <h2>Challenger</h2>
                   <TextField
                     id="number"
@@ -373,7 +377,11 @@ class App extends Component {
                       ? (<Icon className={classes.success}>check</Icon>)
                       : (<Icon className={classes.error}>close</Icon>)
                   }
-                  <DecisionMatrix player={challenger} setAction={this.setAction()}/>
+                  <DecisionMatrix
+                    player={challenger}
+                    setAction={this.setAction()}
+                    tcr={tcr}
+                  />
                 </Paper>
               </Grid>
             </Grid>
@@ -382,7 +390,7 @@ class App extends Component {
                 voters.map((voter, index) => {
                   return (
                     <Grid item sm={6} md={4} key={index}>
-                      <Paper className={voter.player.action === voter.bestStrategy ? classes.paperBestStrategy : classes.paper}>
+                      <Paper className={tcr.isBestStrategy(voter.player.action, voter.payoffs) ? classes.paperBestStrategy : classes.paper}>
                         <h2>Voter</h2>
                         <TextField
                           id="number"
@@ -402,7 +410,11 @@ class App extends Component {
                             ? (<Icon className={classes.success}>check</Icon>)
                             : (<Icon className={classes.error}>close</Icon>)
                         }
-                        <DecisionMatrix player={voter} setAction={this.setAction()}/>
+                        <DecisionMatrix
+                          player={voter}
+                          setAction={this.setAction()}
+                          tcr={tcr}
+                        />
                       </Paper>
                     </Grid>
                   )
