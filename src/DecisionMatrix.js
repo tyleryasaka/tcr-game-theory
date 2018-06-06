@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Badge from '@material-ui/core/Badge';
 import Icon from '@material-ui/core/Icon';
+import Radio from '@material-ui/core/Radio';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -20,7 +21,7 @@ const styles = theme => ({
 
 class DecisionMatrix extends Component {
   isSelectedColumn(action, column) {
-    const { player: { payoffs: { selectedColumns } } } = this.props
+    const { player: { payoffs: { selectedColumns }, player } } = this.props
     return selectedColumns[action] === column
   }
 
@@ -28,9 +29,16 @@ class DecisionMatrix extends Component {
     return Math.round(100 * number) / 100
   }
 
+  handleRowClick(action) {
+    const { setAction, player } = this.props
+    return () => {
+      this.props.setAction(player.player, action)
+    }
+  }
+
   render() {
     const { player, classes } = this.props
-    const { bestStrategy, payoffs: { matrix } } = player
+    const { bestStrategy, payoffs: { matrix }, player: { action } } = player
     const actions = Object.keys(matrix)
     const firstAction = actions[0]
     const columns = Object.keys(matrix[firstAction])
@@ -49,14 +57,19 @@ class DecisionMatrix extends Component {
           </TableRow>
         </TableHead>
         <TableBody>
-          {actions.map((action) => {
+          {actions.map((row) => {
             return (
               <TableRow
-                key={action}
-                className={action === bestStrategy ? classes.bestStrategy : ""}
+                key={row}
+                className={row === bestStrategy ? classes.bestStrategy : ""}
+                onClick={this.handleRowClick(row)}
               >
                 <TableCell component="th" scope="row">
-                  {action}
+                <Radio
+                  color="primary"
+                  checked={row === action}
+                />
+                  {row}
                 </TableCell>
                 {columns.map((column) => {
                   return (
@@ -66,13 +79,13 @@ class DecisionMatrix extends Component {
                           className={classes.badge}
                           badgeContent={(
                             <Icon>{
-                              this.isSelectedColumn(action, column)
+                              this.isSelectedColumn(row, column)
                                 ? "radio_button_unchecked"
                                 : "lens"
                             }</Icon>
                           )}
                         >
-                        <Typography>{this.round(matrix[action][column])}</Typography>
+                        <Typography>{this.round(matrix[row][column])}</Typography>
                       </Badge>)}
                     </TableCell>
                   )

@@ -86,9 +86,9 @@ class App extends Component {
     }
   }
 
-  setAction(player) {
-    return (e) => {
-      player.action = e.target.value;
+  setAction() {
+    return (player, action) => {
+      player.action = action;
       this.forceUpdate();
     }
   }
@@ -277,19 +277,12 @@ class App extends Component {
                     margin="normal"
                     className={classes.textField}
                   />
-                  <Select
-                    value={candidate.player.action}
-                    onChange={this.setAction(candidate.player)}
-                  >
-                    <MenuItem value={actionApply}>Apply</MenuItem>
-                    <MenuItem value={actionNotApply}>Don't Apply</MenuItem>
-                  </Select>
                   {
                     candidate.player.action === candidate.bestStrategy
                       ? (<Icon className={classes.success}>check</Icon>)
                       : (<Icon className={classes.error}>close</Icon>)
                   }
-                  <DecisionMatrix player={candidate}/>
+                  <DecisionMatrix player={candidate} setAction={this.setAction()}/>
                 </Paper>
               </Grid>
               <Grid item sm={12} md={6}>
@@ -308,19 +301,12 @@ class App extends Component {
                     margin="normal"
                     className={classes.textField}
                   />
-                  <Select
-                    value={challenger.player.action}
-                    onChange={this.setAction(challenger.player)}
-                  >
-                    <MenuItem value={actionChallenge}>Challenge</MenuItem>
-                    <MenuItem value={actionNotChallenge}>Don't Challenge</MenuItem>
-                  </Select>
                   {
                     challenger.player.action === challenger.bestStrategy
                       ? (<Icon className={classes.success}>check</Icon>)
                       : (<Icon className={classes.error}>close</Icon>)
                   }
-                  <DecisionMatrix player={challenger}/>
+                  <DecisionMatrix player={challenger} setAction={this.setAction()}/>
                 </Paper>
               </Grid>
             </Grid>
@@ -344,20 +330,12 @@ class App extends Component {
                           margin="normal"
                           className={classes.textField}
                         />
-                        <Select
-                          value={voter.player.action}
-                          onChange={this.setAction(voter.player)}
-                        >
-                          <MenuItem value={actionAbstain}>Abstain</MenuItem>
-                          <MenuItem value={actionAccept}>Accept</MenuItem>
-                          <MenuItem value={actionReject}>Reject</MenuItem>
-                        </Select>
                         {
                           voter.player.action === voter.bestStrategy
                             ? (<Icon className={classes.success}>check</Icon>)
                             : (<Icon className={classes.error}>close</Icon>)
                         }
-                        <DecisionMatrix player={voter}/>
+                        <DecisionMatrix player={voter} setAction={this.setAction()}/>
                       </Paper>
                     </Grid>
                   )
