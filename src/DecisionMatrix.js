@@ -109,7 +109,15 @@ class DecisionMatrix extends Component {
             {columns.map((column) => {
               return (
                 <TableCell numeric key={column} component="th" scope="row">
-                  {this.getColumnName(column)}
+                  <span
+                    className={
+                      this.isSelectedColumn(action, column)
+                        ? classes.isSelectedColumn
+                        : classes.isNotSelectedColumn
+                    }
+                  >
+                    {this.getColumnName(column)}
+                  </span>
                 </TableCell>
               )
             })}
