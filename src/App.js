@@ -159,7 +159,7 @@ class App extends Component {
       ? 'was'
       : 'would have been'
 
-    const tallyText = `with a vote of ${yay}:${nay} (approve:reject).`
+    const tallyText = `with a vote of ${yay}:${nay} (accept:reject).`
 
     const verdictText = didApprove
       ? `the listing ${verdictTense} approved`
