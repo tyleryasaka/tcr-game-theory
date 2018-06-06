@@ -185,7 +185,8 @@ class TCR {
   }
 
   getIsChallenged() {
-    return typeof this.challenger === 'number'
+    const challenger = this.getPlayer(this.challenger)
+    return challenger.action === actionChallenge
   }
 
   tokensFor(player) {
