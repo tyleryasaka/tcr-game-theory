@@ -165,12 +165,6 @@ class App extends Component {
       ? `the listing ${verdictTense} approved`
       : `the listing ${verdictTense} rejected`
 
-    console.log('getting', [
-      `${equilibriumText}`,
-      `${scenarioText} ${applyText} ${challengeText}`,
-      `${voteText} ${verdictText} ${tallyText}`,
-    ])
-
     return [
       `${equilibriumText}`,
       `${scenarioText} ${applyText} ${challengeText}`,
