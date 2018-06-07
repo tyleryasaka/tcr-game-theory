@@ -189,7 +189,7 @@ class App extends Component {
       <div className="App" className={classes.app}>
         <Grid container spacing={24}>
           <Grid item sm={12}>
-            <Typography variant="headline" align="center">Token Curated Registry Playground</Typography>
+            <Typography variant="headline" align="center">Token-Curated Registry Playground</Typography>
             <Typography variant="subheading" align="center">
               TCR 1.1 modeled using game theory.
               <br/>
