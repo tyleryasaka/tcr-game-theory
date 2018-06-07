@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DecisionMatrix from './DecisionMatrix.js';
+import Button from '@material-ui/core/Button';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
@@ -187,6 +188,16 @@ class App extends Component {
     return (
       <div className="App" className={classes.app}>
         <Grid container spacing={24}>
+          <Grid item sm={12}>
+            <Typography variant="headline" align="center">Token Curated Registry Playground</Typography>
+            <Typography variant="subheading" align="center">
+              TCR 1.1 modeled using game theory.
+              <br/>
+              <Button color="primary" href="https://github.com/tyleryasaka/tcr-game-theroy">
+                Learn more
+              </Button>
+            </Typography>
+          </Grid>
           <Grid item sm={6}>
             <Paper className={classes.paper}>
               <h2>TCR Parameters</h2>
