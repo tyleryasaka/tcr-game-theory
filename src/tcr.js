@@ -239,36 +239,38 @@ class TCR {
     return validActions
   }
 
-  getPlayerAction(player) {
+  getPlayerAction(player, action) {
+    const actionToUse = action || player.action
     const validActions = this.getValidActions(player)
-    return validActions.includes(player.action) ? player.action : validActions[0]
+    return validActions.includes(actionToUse) ? actionToUse : validActions[0]
   }
 
-  getPayoff({ matrix, selectedColumns }, selectedAction) {
-    const column = selectedColumns[selectedAction]
-    return matrix[selectedAction][column]
+  getPayoff({ matrix, selectedColumns }, player, selectedAction) {
+    const validAction = this.getPlayerAction(player, selectedAction)
+    const column = selectedColumns[validAction]
+    return matrix[validAction][column]
   }
 
   getBestStrategy(player, payoffs) {
     const actions = Object.keys(payoffs.matrix)
     const firstAction = actions[0]
     return actions.slice(1).reduce((bestAction, action) => {
-      const value = this.getPayoff(payoffs, action)
-      const bestValue = this.getPayoff(payoffs, bestAction)
+      const value = this.getPayoff(payoffs, player, action)
+      const bestValue = this.getPayoff(payoffs, player, bestAction)
       return value > bestValue ? action : bestAction
     }, firstAction)
   }
 
-  isBestStrategy(action, payoffs) {
-    const bestStrategy = this.getBestStrategy(action, payoffs)
-    return this.getPayoff(payoffs, bestStrategy) === this.getPayoff(payoffs, action)
+  isBestStrategy(player, action, payoffs) {
+    const bestStrategy = this.getBestStrategy(player, payoffs)
+    return this.getPayoff(payoffs, player, bestStrategy) === this.getPayoff(payoffs, player, action)
   }
 
   isEquilibrium() {
     return this.players.reduce((acc, player) => {
       const payoffs = this.getPlayerMatrix(player)
       const selectedAction = this.getPlayerAction(player)
-      return acc && this.isBestStrategy(selectedAction, payoffs)
+      return acc && this.isBestStrategy(player, selectedAction, payoffs)
     }, true)
   }
 

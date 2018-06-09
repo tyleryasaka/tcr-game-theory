@@ -315,7 +315,7 @@ class App extends Component {
           <Grid item sm={12}>
             <Grid container spacing={24}>
               <Grid item sm={6} md={6}>
-                <Paper className={tcr.isBestStrategy(candidate.player.action, candidate.payoffs) ? classes.paperBestStrategy : classes.paper}>
+                <Paper className={tcr.isBestStrategy(candidate.player, candidate.player.action, candidate.payoffs) ? classes.paperBestStrategy : classes.paper}>
                   <h2>Candidate</h2>
                   <TextField
                     id="number"
@@ -368,7 +368,7 @@ class App extends Component {
                 </Paper>
               </Grid>
               <Grid item sm={6} md={6}>
-                <Paper className={tcr.isBestStrategy(challenger.player.action, challenger.payoffs) ? classes.paperBestStrategy : classes.paper}>
+                <Paper className={tcr.isBestStrategy(challenger.player, challenger.player.action, challenger.payoffs) ? classes.paperBestStrategy : classes.paper}>
                   <h2>Challenger</h2>
                   <TextField
                     id="number"
@@ -401,7 +401,7 @@ class App extends Component {
                 voters.map((voter, index) => {
                   return (
                     <Grid item sm={6} md={4} key={index}>
-                      <Paper className={tcr.isBestStrategy(voter.player.action, voter.payoffs) ? classes.paperBestStrategy : classes.paper}>
+                      <Paper className={tcr.isBestStrategy(voter.player, voter.player.action, voter.payoffs) ? classes.paperBestStrategy : classes.paper}>
                         <h2>Voter</h2>
                         <TextField
                           id="number"
