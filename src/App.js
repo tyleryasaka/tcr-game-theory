@@ -404,7 +404,7 @@ class App extends Component {
                   return (
                     <Grid item sm={6} md={4} key={index}>
                       <Paper className={tcr.isBestStrategy(voter.player, voter.player.action, voter.payoffs) ? classes.paperBestStrategy : classes.paper}>
-                        <h2>Voter</h2>
+                        <h2>Voter {index + 1}</h2>
                         <TextField
                           id="number"
                           label="Tokens"
