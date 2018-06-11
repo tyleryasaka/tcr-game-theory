@@ -75,14 +75,18 @@ class TCR {
     const isChallenged = this.getIsChallenged()
     const challengeResult = getVerdict(this.getEligibleVoters(), this.voteQuorum) ? columnAccept : columnReject
     const columnSelected = !isChallenged ? columnNotChallenge : challengeResult
+    const minDeposit = this.getMinDeposit()
+    const dispensationPct = this.getDispensationPct()
+    const applicationEffort = this.getApplicationEffort()
+    const registryValue = this.getRegistryValue(candidate)
 
     let matrix = {}
 
     if (validActions.includes(actionApply)) {
       matrix[actionApply] = {}
-      matrix[actionApply][columnAccept] = candidate.registryValue + this.minDeposit * this.dispensationPct  - this.applicationEffort
-      matrix[actionApply][columnReject] = -1 * this.minDeposit  - this.applicationEffort
-      matrix[actionApply][columnNotChallenge] = candidate.registryValue - this.applicationEffort
+      matrix[actionApply][columnAccept] = registryValue + minDeposit * dispensationPct  - applicationEffort
+      matrix[actionApply][columnReject] = -1 * minDeposit  - applicationEffort
+      matrix[actionApply][columnNotChallenge] = registryValue - applicationEffort
     }
 
     if (validActions.includes(actionNotApply)) {
@@ -103,16 +107,21 @@ class TCR {
     const candidate = this.getPlayer(this.candidate)
     const challenger = this.getPlayer(this.challenger)
     const validActions = this.getValidActions(challenger)
+    const minDeposit = this.getMinDeposit()
+    const voteQuorum = this.getVoteQuorum()
+    const dispensationPct = this.getDispensationPct()
+    const challengeEffort = this.getChallengeEffort()
+    const tokens = this.getTokens(challenger)
 
-    const columnSelected = getVerdict(this.getEligibleVoters(), this.voteQuorum) ? columnLose : columnWin
-    const tokenValueChange = challenger.tokens * (this.getTokenAppreciation() - 1)
+    const columnSelected = getVerdict(this.getEligibleVoters(), voteQuorum) ? columnLose : columnWin
+    const tokenValueChange = tokens * (this.getTokenAppreciation() - 1)
 
     let matrix = {}
 
     if (validActions.includes(actionChallenge)) {
       matrix[actionChallenge] = {}
-      matrix[actionChallenge][columnWin] = this.minDeposit * this.dispensationPct - this.challengeEffort
-      matrix[actionChallenge][columnLose] = tokenValueChange - this.minDeposit - this.challengeEffort
+      matrix[actionChallenge][columnWin] = minDeposit * dispensationPct - challengeEffort
+      matrix[actionChallenge][columnLose] = tokenValueChange - minDeposit - challengeEffort
     }
 
     if (validActions.includes(actionNotChallenge)) {
@@ -131,14 +140,20 @@ class TCR {
   getVoterMatrix({ id }) {
     const voter = this.getPlayer(id)
     const validActions = this.getValidActions(voter)
+    const minDeposit = this.getMinDeposit()
+    const dispensationPct = this.getDispensationPct()
+    const voteQuorum = this.getVoteQuorum()
+    const voteEffort = this.getVoteEffort()
+    const minorityBlocSlash = this.getMinorityBlocSlash()
+    const tokens = this.getTokens(voter)
 
     const otherVoters = this.getEligibleVoters().filter((player) => {
       return player.id !== voter.id
     })
 
     // hypothetical voting choices
-    const withMeAccepting = otherVoters.concat(new Player({ tokens: voter.tokens, action: actionAccept, registryValue: 1000 }))
-    const withMeRejecting = otherVoters.concat(new Player({ tokens: voter.tokens, action: actionReject, registryValue: 1001 }))
+    const withMeAccepting = otherVoters.concat(new Player({ tokens, action: actionAccept, registryValue: 1000 }))
+    const withMeRejecting = otherVoters.concat(new Player({ tokens, action: actionReject, registryValue: 1001 }))
 
     // tokens excluding voter
     const acceptBlocTokens = getAcceptBlocTokens(otherVoters)
@@ -146,28 +161,28 @@ class TCR {
 
     // the outcome of the vote depends on my action (possibly)
     // therefore the column selected now depends on my action
-    const columnIfIAccept = getVerdict(withMeAccepting, this.voteQuorum) ? columnAccept : columnReject
-    const columnIfIReject = getVerdict(withMeRejecting, this.voteQuorum) ? columnAccept : columnReject
-    const columnIfIAbstain = getVerdict(otherVoters, this.voteQuorum) ? columnAccept : columnReject
+    const columnIfIAccept = getVerdict(withMeAccepting, voteQuorum) ? columnAccept : columnReject
+    const columnIfIReject = getVerdict(withMeRejecting, voteQuorum) ? columnAccept : columnReject
+    const columnIfIAbstain = getVerdict(otherVoters, voteQuorum) ? columnAccept : columnReject
 
     // percentage including voter
-    const percentOfAcceptBloc = voter.tokens / (acceptBlocTokens + voter.tokens)
-    const percentOfRejectBloc = voter.tokens / (rejectBlocTokens + voter.tokens)
+    const percentOfAcceptBloc = voter.tokens / (acceptBlocTokens + tokens)
+    const percentOfRejectBloc = voter.tokens / (rejectBlocTokens + tokens)
 
-    const tokenValueChange = voter.tokens * (this.getTokenAppreciation() - 1)
+    const tokenValueChange = tokens * (this.getTokenAppreciation() - 1)
 
     let matrix = {}
 
     if (validActions.includes(actionAccept)) {
       matrix[actionAccept] = {}
-      matrix[actionAccept][columnAccept] = tokenValueChange + (1 - this.dispensationPct) * this.minDeposit + rejectBlocTokens * this.minorityBlocSlash * percentOfAcceptBloc - this.voteEffort
-      matrix[actionAccept][columnReject] = -1 * voter.tokens * this.minorityBlocSlash - this.voteEffort
+      matrix[actionAccept][columnAccept] = tokenValueChange + (1 - dispensationPct) * minDeposit + rejectBlocTokens * minorityBlocSlash * percentOfAcceptBloc - voteEffort
+      matrix[actionAccept][columnReject] = -1 * tokens * minorityBlocSlash - voteEffort
     }
 
     if (validActions.includes(actionReject)) {
       matrix[actionReject] = {}
-      matrix[actionReject][columnAccept] = tokenValueChange - (voter.tokens * this.minorityBlocSlash) - this.voteEffort
-      matrix[actionReject][columnReject] = (1 - this.dispensationPct) * this.minDeposit + acceptBlocTokens * this.minorityBlocSlash * percentOfRejectBloc - this.voteEffort
+      matrix[actionReject][columnAccept] = tokenValueChange - (tokens * minorityBlocSlash) - voteEffort
+      matrix[actionReject][columnReject] = (1 - dispensationPct) * minDeposit + acceptBlocTokens * minorityBlocSlash * percentOfRejectBloc - voteEffort
     }
 
     if (validActions.includes(actionAbstain)) {
@@ -199,7 +214,7 @@ class TCR {
   getTokenAppreciation() {
     const currentQuality = 100 // just stubbing this in for now
     const candidate = this.getPlayer(this.candidate)
-    const addedQuality = Number(candidate.quality) || 0
+    const addedQuality = this.getQuality(candidate) || 0
     return (currentQuality + addedQuality) / currentQuality
   }
 
@@ -227,7 +242,9 @@ class TCR {
 
   getValidActions(player) {
     const selectedAction = player.action
-    const canDeposit = player.tokens >= this.minDeposit
+    const tokens = this.getTokens(player)
+    const minDeposit = this.getMinDeposit()
+    const canDeposit = tokens >= minDeposit
     let validActions
     if (player.id === this.candidate) {
       validActions = canDeposit ? [actionApply, actionNotApply] : [actionNotApply]
@@ -306,6 +323,46 @@ class TCR {
       verdict: getVerdict(voters, this.voteQuorum),
       isEquilibrium: this.isEquilibrium()
     }
+  }
+
+  getMinDeposit() {
+    return Number(this.minDeposit)
+  }
+
+  getDispensationPct() {
+    return Number(this.dispensationPct)
+  }
+
+  getMinorityBlocSlash() {
+    return Number(this.minorityBlocSlash)
+  }
+
+  getVoteQuorum() {
+    return Number(this.voteQuorum)
+  }
+
+  getApplicationEffort() {
+    return Number(this.applicationEffort)
+  }
+
+  getChallengeEffort() {
+    return Number(this.challengeEffort)
+  }
+
+  getVoteEffort() {
+    return Number(this.voteEffort)
+  }
+
+  getRegistryValue(player) {
+    return Number(player.registryValue)
+  }
+
+  getQuality(player) {
+    return Number(player.quality)
+  }
+
+  getTokens(player) {
+    return Number(player.tokens)
   }
 }
 

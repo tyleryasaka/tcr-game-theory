@@ -184,6 +184,8 @@ class App extends Component {
       voters
     } = gameData;
     const numVoters = voters.length
+    const minDeposit = tcr.getMinDeposit()
+    const minorityBlocSlash = tcr.getMinorityBlocSlash()
 
     return (
       <div className="App" className={classes.app}>
@@ -204,7 +206,7 @@ class App extends Component {
               <TextField
                 id="number"
                 label="MIN_DEPOSIT"
-                value={tcr.minDeposit}
+                value={minDeposit}
                 onChange={this.setGameProperty("minDeposit")}
                 type="number"
                 inputProps={{ min: "0" }}
@@ -230,7 +232,7 @@ class App extends Component {
               <TextField
                 id="number"
                 label="MINORITY_BLOC_SLASH"
-                value={tcr.minorityBlocSlash}
+                value={minorityBlocSlash}
                 onChange={this.setGameProperty("minorityBlocSlash")}
                 type="number"
                 inputProps={{ min: "0", max: "1", step: "0.1" }}
