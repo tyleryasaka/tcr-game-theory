@@ -175,14 +175,14 @@ class TCR {
 
     if (validActions.includes(actionAccept)) {
       matrix[actionAccept] = {}
-      matrix[actionAccept][columnAccept] = tokenValueChange + (1 - dispensationPct) * minDeposit + rejectBlocTokens * minorityBlocSlash * percentOfAcceptBloc - voteEffort
+      matrix[actionAccept][columnAccept] = tokenValueChange + (1 - dispensationPct) * minDeposit * percentOfAcceptBloc + rejectBlocTokens * minorityBlocSlash * percentOfAcceptBloc - voteEffort
       matrix[actionAccept][columnReject] = -1 * tokens * minorityBlocSlash - voteEffort
     }
 
     if (validActions.includes(actionReject)) {
       matrix[actionReject] = {}
       matrix[actionReject][columnAccept] = tokenValueChange - (tokens * minorityBlocSlash) - voteEffort
-      matrix[actionReject][columnReject] = (1 - dispensationPct) * minDeposit + acceptBlocTokens * minorityBlocSlash * percentOfRejectBloc - voteEffort
+      matrix[actionReject][columnReject] = (1 - dispensationPct) * minDeposit * percentOfRejectBloc + acceptBlocTokens * minorityBlocSlash * percentOfRejectBloc - voteEffort
     }
 
     if (validActions.includes(actionAbstain)) {
