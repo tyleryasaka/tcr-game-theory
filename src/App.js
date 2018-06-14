@@ -11,6 +11,11 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
 import Select from '@material-ui/core/Select';
 import Switch from '@material-ui/core/Switch';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
@@ -262,7 +267,7 @@ class App extends Component {
               <h2>Other Parameters</h2>
               <TextField
                 id="number"
-                label="Application Cost"
+                label="Application_Cost"
                 value={tcr.applicationEffort}
                 onChange={this.setGameProperty("applicationEffort")}
                 type="number"
@@ -275,7 +280,7 @@ class App extends Component {
               />
               <TextField
                 id="number"
-                label="Challenge Cost"
+                label="Challenge_Cost"
                 value={tcr.challengeEffort}
                 onChange={this.setGameProperty("challengeEffort")}
                 type="number"
@@ -288,7 +293,7 @@ class App extends Component {
               />
               <TextField
                 id="number"
-                label="Vote Cost"
+                label="Vote_Cost"
                 value={tcr.voteEffort}
                 onChange={this.setGameProperty("voteEffort")}
                 type="number"
@@ -301,7 +306,7 @@ class App extends Component {
               />
               <TextField
                 id="number"
-                label="Number of Voters"
+                label="Number_of_Voters"
                 value={numVoters}
                 onChange={this.setVoters()}
                 type="number"
@@ -321,7 +326,7 @@ class App extends Component {
                   <h2>Candidate</h2>
                   <TextField
                     id="number"
-                    label="Listing Valuation"
+                    label="Listing_Valuation"
                     value={candidate.player.registryValue}
                     onChange={this.setPlayerProperty(candidate.player, "registryValue")}
                     type="number"
@@ -458,6 +463,178 @@ class App extends Component {
                   })
                 }
               </div>
+            </Paper>
+          </Grid>
+          <Grid item sm={12}>
+            <Paper className={classes.paper}>
+              <h2>Candidate Payoff Equations</h2>
+              <Typography align="left">
+                Let <strong>Win_Reward</strong> = MIN_DEPOSIT * DISPENSATION_PCT
+                <br/>
+                Let <strong>Lose_Penalty</strong> = MIN_DEPOSIT
+              </Typography>
+              <Typography>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell></TableCell>
+                      <TableCell numeric>Accepted</TableCell>
+                      <TableCell numeric>Rejected</TableCell>
+                      <TableCell numeric>Not Challenged</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                        <TableRow>
+                          <TableCell numeric scope="row">
+                            Apply
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            Listing_Valuation + Win_Reward - Application_Cost
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            0 - Lose_Penalty - Application_Cost
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            Listing_Valuation - Application_Cost
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell numeric scope="row">
+                            Don't Apply
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            0
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            0
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            0
+                          </TableCell>
+                        </TableRow>
+                  </TableBody>
+                </Table>
+              </Typography>
+              <br />
+            </Paper>
+          </Grid>
+          <Grid item sm={12}>
+            <Paper className={classes.paper}>
+              <h2>Challenger Payoff Equations</h2>
+              <Typography align="left">
+                Let <strong>Tokens</strong> be the number of tokens owned by the challenger
+                <br/>
+                Let <strong>Token_Value_Change</strong> = Tokens * (((100 + Quality) / 100) - 1)
+                <br/>
+                Let <strong>Win_Reward</strong> = MIN_DEPOSIT * DISPENSATION_PCT
+                <br/>
+                Let <strong>Lose_Penalty</strong> = MIN_DEPOSIT
+              </Typography>
+              <Typography>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell></TableCell>
+                      <TableCell numeric>Won</TableCell>
+                      <TableCell numeric>Lost</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                        <TableRow>
+                          <TableCell numeric scope="row">
+                            Challenge
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            Win_Reward - Challenge_Cost
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            Token_Value_Change - Lose_Penalty - Challenge_Cost
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell numeric scope="row">
+                            Don't Challenge
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            Token_Value_Change
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            Token_Value_Change
+                          </TableCell>
+                        </TableRow>
+                  </TableBody>
+                </Table>
+              </Typography>
+              <br />
+            </Paper>
+          </Grid>
+          <Grid item sm={12}>
+            <Paper className={classes.paper}>
+              <h2>Voter Payoff Equations</h2>
+              <Typography align="left">
+                Let <strong>Tokens</strong> be the number of tokens owned by the voter
+                <br/>
+                Let <strong>Token_Value_Change</strong> = Tokens * (((100 + Quality) / 100) - 1)
+                <br/>
+                Let <strong>Win_Bloc_Tokens</strong> be the total number of tokens owned by voters in the winning bloc
+                <br/>
+                Let <strong>Lose_Bloc_Tokens</strong> be the total number of tokens owned by voters in the losing bloc
+                <br/>
+                Let <strong>Percent_of_Win_Bloc</strong> = Tokens / Win_Bloc_Tokens
+                <br/>
+                Let <strong>Primary_Win_Reward</strong> = MIN_DEPOSIT * (1 - DISPENSATION_PCT) * Percent_of_Win_Bloc
+                <br/>
+                Let <strong>Voter_Bloc_Win_Reward</strong> = Lose_Bloc_Tokens * MINORITY_BLOC_SLASH * Percent_of_Win_Bloc
+                <br/>
+                Let <strong>Voter_Bloc_Lose_Penalty</strong> = Tokens * MINORITY_BLOC_SLASH
+              </Typography>
+              <Typography>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell></TableCell>
+                      <TableCell numeric>Accepted</TableCell>
+                      <TableCell numeric>Rejected</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                        <TableRow>
+                          <TableCell numeric scope="row">
+                            Accept
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            Token_Value_Change + Primary_Win_Reward + Voter_Bloc_Win_Reward - Vote_Cost
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            0 - Voter_Bloc_Lose_Penalty - Vote_Cost
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell numeric scope="row">
+                            Reject
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            Token_Value_Change - Voter_Bloc_Lose_Penalty - Vote_Cost
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            Primary_Win_Reward + Voter_Bloc_Win_Reward - Vote_Cost
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell numeric scope="row">
+                            Abstain
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            Token_Value_Change
+                          </TableCell>
+                          <TableCell numeric scope="row">
+                            0
+                          </TableCell>
+                        </TableRow>
+                  </TableBody>
+                </Table>
+              </Typography>
+              <br />
             </Paper>
           </Grid>
         </Grid>
