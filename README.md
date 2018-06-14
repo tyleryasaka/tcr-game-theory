@@ -1,5 +1,7 @@
 # Token-Curated Registry Playground
 
+https://tcr-game-theory.firebaseapp.com/
+
 ## Overview
 
 TCR 1.1 modeled using game theory.
